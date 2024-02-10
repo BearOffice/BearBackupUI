@@ -1,6 +1,8 @@
 # BearBackupUI
 A backup tool to backup directories (folders) manually or on schedule.  
 Support for file versioning and mirroring. This application **even** supports dark mode.  
+  
+*.Net 8.0 runtime is needed.*
 
 ## How to use
 1. Select the repository type (versioning / mirroring) and the repository path.  
