@@ -1,0 +1,74 @@
+﻿<ui:UiWindow x:Class="BearBackupUI.Windows.RestoreWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:BearBackupUI.Windows"
+        xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+        mc:Ignorable="d"
+        Title="Bear Backup UI - Restore" Height="450" Width="800" Closing="OnClosing" Closed="OnClosed"
+        ExtendsContentIntoTitleBar="True" MinHeight="450" MinWidth="800"  ContentRendered="Window_ContentRendered"
+        WindowBackdropType="Mica" ResizeMode="CanResize">
+    <ui:UiWindow.Resources>
+        <DataTemplate x:Key="DirItemTemplate" DataType="local:DirViewObject">
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,2">
+                <ui:SymbolIcon Symbol="Folder16" Margin="0,0,3,0" VerticalAlignment="Center" />
+                <TextBlock Text="{Binding FullName}" VerticalAlignment="Center"/>
+            </StackPanel>
+        </DataTemplate>
+        <DataTemplate x:Key="FileItemTemplate" DataType="local:FileViewObject">
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,2">
+                <ui:SymbolIcon Symbol="Document16" Margin="0,0,3,0" VerticalAlignment="Center" />
+                <TextBlock Text="{Binding Name}" VerticalAlignment="Center"/>
+            </StackPanel>
+        </DataTemplate>
+    </ui:UiWindow.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <ui:TitleBar
+        Title="Bear Backup UI - Restore" Grid.Row="0"
+        Icon="{StaticResource Logo}" />
+
+        <Grid x:Name="MainGrid" Margin="8,0,8,8" Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="5,0,5,5">
+                <ui:MenuItem Header="Save" Click="Save_Click">
+                    <ui:MenuItem.Icon>
+                        <ui:SymbolIcon Symbol="Save24" />
+                    </ui:MenuItem.Icon>
+                </ui:MenuItem>
+                <ui:MenuItem Header="Save Selected"  Click="SaveSelected_Click"
+                             IsEnabled="{Binding SelectedItem, ElementName=IndexTreeView, 
+                                    Converter={StaticResource NullToBooleanConverter}}">
+                    <ui:MenuItem.Icon>
+                        <ui:SymbolIcon Symbol="DocumentSave24" />
+                    </ui:MenuItem.Icon>
+                </ui:MenuItem>
+                <ui:NavigationSeparator />
+                <ui:MenuItem Header="Expand" Click="Expand_Click">
+                    <ui:MenuItem.Icon>
+                        <ui:SymbolIcon Symbol="TextExpand24" />
+                    </ui:MenuItem.Icon>
+                </ui:MenuItem>
+                <ui:MenuItem Header="Collapse" Click="Collapse_Click">
+                    <ui:MenuItem.Icon>
+                        <ui:SymbolIcon Symbol="TextCollapse24" />
+                    </ui:MenuItem.Icon>
+                </ui:MenuItem>
+            </StackPanel>
+
+            <Border Style="{StaticResource ElementBorderStyle}" 
+                Grid.Row="1" Margin="5,5,5,5">
+                <TreeView x:Name="IndexTreeView" />
+            </Border>
+        </Grid>
+    </Grid>
+</ui:UiWindow>

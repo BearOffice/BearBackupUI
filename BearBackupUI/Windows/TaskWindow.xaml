@@ -1,0 +1,149 @@
+﻿<ui:UiWindow x:Class="BearBackupUI.Windows.TaskWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:BearBackupUI.Windows"
+        xmlns:current="clr-namespace:BearBackupUI.Windows"
+        xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+        mc:Ignorable="d"
+        Title="Bear Backup UI - Task" Height="450" Width="800" Closed="OnClosed"
+        ExtendsContentIntoTitleBar="True" MinHeight="450" MinWidth="800"
+        WindowBackdropType="Mica" ResizeMode="CanResize">
+    <ui:UiWindow.Resources>
+        <DataTemplate x:Key="CurrentTaskTemplate" DataType="{x:Type current:TaskViewObject}">
+            <StackPanel Margin="5,1,5,1">
+                <TextBlock FontSize="16" Text="{Binding TaskTitle}"
+                           Margin="0,0,0,5" TextWrapping="Wrap" VerticalAlignment="Bottom"
+                           Foreground="{ui:ThemeResource SystemAccentColorPrimaryBrush}" />
+                <TextBlock Text="{Binding BackupTarget}"
+                           TextWrapping="Wrap" VerticalAlignment="Bottom" />
+            </StackPanel>
+        </DataTemplate>
+        <DataTemplate x:Key="TaskTemplate" DataType="{x:Type current:TaskViewObject}">
+            <StackPanel Margin="5,1,5,1">
+                <TextBlock Text="{Binding TaskTitle}"
+                           Margin="0,0,0,5" TextWrapping="Wrap" VerticalAlignment="Bottom"
+                           Foreground="{ui:ThemeResource SystemAccentColorPrimaryBrush}" />
+                <TextBlock Text="{Binding BackupTarget}"
+                           TextWrapping="Wrap" VerticalAlignment="Bottom" />
+            </StackPanel>
+        </DataTemplate>
+        <DataTemplate x:Key="CompletedTaskTemplate" DataType="{x:Type current:CompletedTaskViewObject}">
+            <StackPanel Margin="5,1,5,1">
+                <TextBlock Text="Fatal Failed" Visibility="{Binding FaultVisibility}"
+                           Margin="0,0,0,1" TextWrapping="Wrap" VerticalAlignment="Bottom" FontWeight="SemiBold"
+                           Foreground="{ui:ThemeResource SystemFillColorCriticalBrush}" />
+                <TextBlock Text="{Binding TaskTitle}"
+                           Margin="0,0,0,5" TextWrapping="Wrap" VerticalAlignment="Bottom"
+                           Foreground="{ui:ThemeResource SystemAccentColorPrimaryBrush}" />
+                <TextBlock Text="{Binding BackupTarget}"
+                           TextWrapping="Wrap" VerticalAlignment="Bottom" Margin="0,0,0,1"
+                           Foreground="{ui:ThemeResource TextFillColorSecondaryBrush}"/>
+                <TextBlock Text="{Binding CompletedTime}"
+                           TextWrapping="Wrap" VerticalAlignment="Bottom" Margin="0,0,0,1"
+                           Foreground="{ui:ThemeResource TextFillColorSecondaryBrush}"/>
+                <TextBlock Text="{Binding ExceptionInfo}"
+                           TextWrapping="Wrap" VerticalAlignment="Bottom"
+                           Foreground="{ui:ThemeResource TextFillColorSecondaryBrush}"/>
+            </StackPanel>
+        </DataTemplate>
+    </ui:UiWindow.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <ui:TitleBar
+        Title="Bear Backup UI - Task" Grid.Row="0"
+        Icon="{StaticResource Logo}" />
+
+        <Grid Margin="8,0,8,8" Grid.Row="1">
+            <Border Style="{StaticResource BackgroundBorderStyle}" Margin="5,5,5,5">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid Grid.Column="0" Margin="0,0,6,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <Label Style="{StaticResource ControlTitleStyle}" Grid.Row="0"
+                            Content="Current task" Margin="0,0,0,6"/>
+                        <Border Style="{StaticResource ElementBorderStyle}" Grid.Row="1">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Label x:Name="TaskContentLabel" Style="{StaticResource LabelSecondaryStyle}" Visibility="Visible"
+                                       MinHeight="60" Margin="0,0,0,10" FontSize="14" Content="No task running now." />
+                                <ContentControl x:Name="TaskContentControl" Visibility="Hidden"
+                                                ContentTemplate="{StaticResource CurrentTaskTemplate}" 
+                                                Grid.Row="0" Margin="0,5,0,2" MinHeight="60" 
+                                                VerticalAlignment="Center" VerticalContentAlignment="Center"/>
+                                <ProgressBar x:Name="TaskProgressBar" Grid.Row="1" Value="0"/>
+                                <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
+                                    <Label x:Name="ProgressLabel" Style="{StaticResource LabelSecondaryStyle}" Padding="0" Content="0"/>
+                                    <Label Style="{StaticResource LabelSecondaryStyle}" Padding="0" Content="% / "/>
+                                    <Label x:Name="TimeLabel" Style="{StaticResource LabelSecondaryStyle}" Padding="0" Content="00:00:00" />
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+
+                        <Label Style="{StaticResource ControlTitleStyle}" Grid.Row="2"
+                            Content="Completed tasks" Margin="0,10,0,6"/>
+                        <Border Style="{StaticResource ElementBorderStyle}" Grid.Row="3">
+                            <ListView x:Name="CompletedListView" SelectionMode="Single" 
+                                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                      ItemTemplate="{StaticResource CompletedTaskTemplate}"
+                                      d:ItemsSource="{d:SampleData ItemCount=10}" />
+                        </Border>
+                    </Grid>
+                    <Grid Grid.Column="1" Margin="6,0,0,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Label Style="{StaticResource ControlTitleStyle}" Grid.Row="0"
+                            Content="Task queue" Margin="0,0,0,6"/>
+                        <Border Style="{StaticResource ElementBorderStyle}" Grid.Row="1">
+                            <ListView x:Name="TaskQueueView" SelectionMode="Single"
+                                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                      ItemTemplate="{StaticResource TaskTemplate}"
+                                      d:ItemsSource="{d:SampleData ItemCount=20}"
+                                      SelectionChanged="TaskListView_SelectionChanged"/>
+                        </Border>
+
+                        <Grid Grid.Row="2" Margin="0,10,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <ui:Button Grid.Column="0" HorizontalAlignment="Stretch" Margin="0,0,5,0" Height="32"
+                                    Content="Remove" Icon="TrayItemRemove24" IsEnabled="{Binding SelectedItem, 
+                                    ElementName=TaskQueueView, Converter={StaticResource NullToBooleanConverter}}" 
+                                    Click="RemoveButton_Click"/>
+                            <ui:Button x:Name="UpButton" Grid.Column="1" HorizontalAlignment="Stretch" Margin="2.5,0,2.5,0" Height="32"
+                                    Content="Up" Icon="ArrowUp24" IsEnabled="{Binding SelectedItem, 
+                                    ElementName=TaskQueueView, Converter={StaticResource NullToBooleanConverter}}"
+                                    Click="UpButton_Click"/>
+                            <ui:Button x:Name="DownButton" Grid.Column="2" HorizontalAlignment="Stretch" Margin="5,0,0,0" Height="32"
+                                    Content="Down" Icon="ArrowDown24" IsEnabled="{Binding SelectedItem, 
+                                    ElementName=TaskQueueView, Converter={StaticResource NullToBooleanConverter}}"
+                                    Click="DownButton_Click"/>
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </Border>
+        </Grid>
+    </Grid>
+</ui:UiWindow>

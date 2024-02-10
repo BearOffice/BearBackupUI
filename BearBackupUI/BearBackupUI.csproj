@@ -1,0 +1,73 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net8.0-windows</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<UseWPF>true</UseWPF>
+		<ApplicationIcon>Assets\app-icon.ico</ApplicationIcon>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Remove="Assets\app-icon-s.png" />
+		<None Remove="Assets\app-icon.png" />
+		<None Remove="Assets\applicationIcon-1024.png" />
+		<None Remove="Assets\applicationIcon-256.png" />
+		<None Remove="Assets\notifyicon-active.png" />
+		<None Remove="Assets\notifyicon.png" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Resource Include="Assets\app-icon.ico" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="BearMarkupLanguage" Version="5.1.0" />
+		<PackageReference Include="LoggingLib" Version="2.0.1" />
+		<PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
+		<PackageReference Include="WPF-UI" Version="2.1.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\BearBackup\BearBackup.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Resource Include="Assets\app-icon-s.png" />
+	  <Resource Include="Assets\app-icon.png" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Update="Windows\AddRecordWindow.xaml.cs">
+	    <SubType>Code</SubType>
+	  </Compile>
+	  <Compile Update="Windows\AddRepoWindow.xaml.cs">
+	    <SubType>Code</SubType>
+	  </Compile>
+	  <Compile Update="Windows\RepoInfoWindow.xaml.cs">
+	    <SubType>Code</SubType>
+	  </Compile>
+	  <Compile Update="Windows\CreateRepoWindow.xaml.cs">
+	    <SubType>Code</SubType>
+	  </Compile>
+	  <Compile Update="Windows\TaskWindow.xaml.cs">
+	    <SubType>Code</SubType>
+	  </Compile>
+	  <Compile Update="Windows\RestoreWindow.xaml.cs">
+	    <SubType>Code</SubType>
+	  </Compile>
+	  <Compile Update="Windows\SettingWindow.xaml.cs">
+	    <SubType>Code</SubType>
+	  </Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Page Update="Resources\ImageDictionary.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </Page>
+	</ItemGroup>
+
+
+</Project>
