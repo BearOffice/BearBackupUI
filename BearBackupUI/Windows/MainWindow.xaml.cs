@@ -275,7 +275,7 @@ public partial class MainWindow : FluentWindow
         _taskWindow.Closed += (sender, args) =>
         {
             _taskWindow = null;
-            GC.Collect();
+			GC.Collect(GC.MaxGeneration, GCCollectionMode.Aggressive);
         };
 
         _taskWindow.Show();
@@ -294,7 +294,7 @@ public partial class MainWindow : FluentWindow
         _logWindow.Closed += (sender, args) =>
         {
             _logWindow = null;
-            GC.Collect();
+			GC.Collect(GC.MaxGeneration, GCCollectionMode.Aggressive);
         };
 
         _logWindow.Show();
@@ -313,8 +313,8 @@ public partial class MainWindow : FluentWindow
         _settingWindow.Closed += (sender, args) =>
         {
             _settingWindow = null;
-            GC.Collect();
-        };
+			GC.Collect(GC.MaxGeneration, GCCollectionMode.Aggressive);
+		};
 
         _settingWindow.Show();
         _settingWindow.Activate();

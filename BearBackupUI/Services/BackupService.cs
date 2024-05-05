@@ -179,8 +179,8 @@ public class BackupService
 
             _backupRepos = null;
             _onUsingTokens.Clear();
-            GC.Collect();
-        }
+			GC.Collect(GC.MaxGeneration, GCCollectionMode.Aggressive);
+		}
     }
 }
 

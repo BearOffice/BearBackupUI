@@ -1,6 +1,5 @@
 ﻿using BearBackup.BasicData;
 using BearBackup.Tools;
-using System.Runtime;
 
 namespace BearBackup.Task;
 
@@ -85,7 +84,7 @@ public class VersioningRemoveTask : IRemoveTask
         exceptions = [.. es];
         IsCompleted = true;
         AddEvent(totalNum, count, false);
-    }
+	}
 
     private void AddEvent(int totalNum, int completedNum, bool isProgressing)
     {

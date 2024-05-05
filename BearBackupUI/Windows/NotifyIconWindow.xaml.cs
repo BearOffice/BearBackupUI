@@ -107,9 +107,9 @@ public partial class NotifyIconWindow : Window
 		_mainWindow.Closed += (sender, args) =>
 		{
 			_mainWindow = null;
-			GC.Collect();
+
 			GC.WaitForPendingFinalizers();
-			GC.Collect();
+			GC.Collect(GC.MaxGeneration, GCCollectionMode.Aggressive);
 		};
 
 		_mainWindow.Show();
