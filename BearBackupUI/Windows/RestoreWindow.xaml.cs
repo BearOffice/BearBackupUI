@@ -182,7 +182,7 @@ public partial class RestoreWindow : UiWindow
             {
                 dirItem.Items.Add(new TreeViewItem
                 {
-                    Header = new FileViewObject { Name = fileInfo.Name, ParentName = null },
+                    Header = new FileViewObject { Name = fileInfo.Name, ParentName = dirViewObj.FullName },
                     HeaderTemplate = _fileTemplate,
                 });
             }

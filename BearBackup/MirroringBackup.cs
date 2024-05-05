@@ -61,7 +61,7 @@ public class MirroringBackup : IBackup
         var dirInfo = new DirectoryInfo(path);
         if (dirInfo.Exists)
         {
-            if (dirInfo.EnumerateFiles().Any() || dirInfo.EnumerateDirectories().Any())
+            if (!dirInfo.IsEmpty())
                 throw new BadBackupException($"Directory `{path}` must be empty before initialization.");
         }
         else

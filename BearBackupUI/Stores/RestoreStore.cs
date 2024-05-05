@@ -5,122 +5,129 @@ using BearBackupUI.Core.Actions;
 using BearBackupUI.Core.DataTags;
 using BearBackupUI.Helpers;
 using BearBackupUI.Services;
+using System.IO;
 
 namespace BearBackupUI.Stores;
 
 public class RestoreStore : IStore
 {
-    public event EventHandler<DataArgs>? Changed;
-    private readonly DispatchCenter _dispatchCenter;
-    private readonly BackupService _backupService;
-    private readonly TaskService _taskService;
+	public event EventHandler<DataArgs>? Changed;
+	private readonly DispatchCenter _dispatchCenter;
+	private readonly BackupService _backupService;
+	private readonly TaskService _taskService;
 
-    public RestoreStore(DispatchCenter dispatchCenter, BackupService backupService, TaskService taskService)
-    {
-        _dispatchCenter = dispatchCenter;
-        _dispatchCenter.AddListener(typeof(RestoreAction), ActionReceived);
+	public RestoreStore(DispatchCenter dispatchCenter, BackupService backupService, TaskService taskService)
+	{
+		_dispatchCenter = dispatchCenter;
+		_dispatchCenter.AddListener(typeof(RestoreAction), ActionReceived);
 
-        _backupService = backupService;
-        _taskService = taskService;
-    }
+		_backupService = backupService;
+		_taskService = taskService;
+	}
 
-    private void ActionReceived(object? sender, ActionArgs e)
-    {
-        if (e.Type is not RestoreAction.Restore) return;
+	private void ActionReceived(object? sender, ActionArgs e)
+	{
+		if (e.Type is not RestoreAction.Restore) return;
 
-        var backupItemRecord = (BackupItemRecord)(e.GetData(RestoreTag.BackupItemRecord) ?? throw new NullReferenceException());
-        var recordInfo = (RecordInfo)(e.GetData(RestoreTag.RecordInfo) ?? throw new NullReferenceException());
-        var restorePath = (string)(e.GetData(RestoreTag.RestorePath) ?? throw new NullReferenceException());
+		var backupItemRecord = (BackupItemRecord)(e.GetData(RestoreTag.BackupItemRecord) ?? throw new NullReferenceException());
+		var recordInfo = (RecordInfo)(e.GetData(RestoreTag.RecordInfo) ?? throw new NullReferenceException());
+		var restorePath = (string)(e.GetData(RestoreTag.RestorePath) ?? throw new NullReferenceException());
 
-        var repo = _backupService.GetRepo(backupItemRecord.ID);
+		var repo = _backupService.GetRepo(backupItemRecord.ID);
 
-        BearBackup.BasicData.Index? index = null;
-        if (repo is MirroringBackup mirror)
-            index = mirror.GetIndex();
-        else if (repo is VersioningBackup version)
-            index = version.GetIndex(recordInfo);
+		BearBackup.BasicData.Index? index = null;
+		if (repo is MirroringBackup mirror)
+			index = mirror.GetIndex();
+		else if (repo is VersioningBackup version)
+			index = version.GetIndex(recordInfo);
 
-        if (index is null)
-            throw new NotImplementedException();
+		if (index is null)
+			throw new NotImplementedException();
 
-        try
-        {
-            if (e.TryGetData(RestoreTag.RestoreAll, out _))
-            {
-                var task = repo.GenerateRestoreTask(restorePath, index);
-                _taskService.AddTask(backupItemRecord, task);
-            }
-            else if (e.TryGetData(RestoreTag.RestoreDir, out var dirPathObj))
-            {
-                var dirPath = (string)(dirPathObj ?? throw new NullReferenceException());
-                var subIndex = index.GetSubIndex(dirPath) ?? throw new Exception("SubIndex not found.");
-                var task = repo.GenerateRestoreTask(restorePath, subIndex);
-                _taskService.AddTask(backupItemRecord, task);
-            }
-            else if (e.TryGetData(RestoreTag.RestoreFile, out var filePathObj))
-            {
-                (var parentName, var fileName) = ((string?, string))(filePathObj ?? throw new NullReferenceException());
-                if (parentName is null)
-                {
-                    var fileInfo = index.FileInfoArr.First(info => info.Name == fileName);
-                    var task = repo.GenerateRestoreTask(restorePath, (index, [fileInfo]));
-                    _taskService.AddTask(backupItemRecord, task);
-                }
-                else
-                {
-                    var subIndex = index.GetSubIndex(parentName) ?? throw new Exception("SubIndex not found.");
-                    var task = repo.GenerateRestoreTask(restorePath, subIndex);
-                    _taskService.AddTask(backupItemRecord, task);
-                }
-            }
-            else
-            {
-                return;
-            }
-        }
-        catch (Exception ex)
-        {
-            var dataIn = new DataArgs();
-            dataIn.AddData(RestoreTag.FailedReasons, ex.Message);
-            Changed?.Invoke(this, dataIn);
-            return;
-        }
+		try
+		{
+			if (e.TryGetData(RestoreTag.RestoreAll, out _))
+			{
+				var task = repo.GenerateRestoreTask(restorePath, index);
+				_taskService.AddTask(backupItemRecord, task);
+			}
+			else if (e.TryGetData(RestoreTag.RestoreDir, out var dirPathObj))
+			{
+				var dirPath = (string)(dirPathObj ?? throw new NullReferenceException());
+				var subIndex = index.GetSubIndex(dirPath) ?? throw new Exception("SubIndex not found.");
 
-        var data = new DataArgs();
-        data.AddEmptyData(RestoreTag.SuccessConfirm);
-        Changed?.Invoke(this, data);
-    }
+				var dirName = new DirectoryInfo(dirPath).Name;
+				restorePath = Path.Combine(restorePath, dirName);
 
-    public DataArgs GetData()
-    {
-        return new DataArgs();
-    }
+				var task = repo.GenerateRestoreTask(restorePath, subIndex);
+				_taskService.AddTask(backupItemRecord, task);
+			}
+			else if (e.TryGetData(RestoreTag.RestoreFile, out var filePathObj))
+			{
+				(var parentName, var fileName) = ((string?, string))(filePathObj ?? throw new NullReferenceException());
 
-    public DataArgs GetData(int id, RecordInfo recordInfo)
-    {
-        var repo = _backupService.GetRepo(id);
+				if (parentName is null)
+				{
+					var fileInfo = index.FileInfoArr.First(info => info.Name == fileName);
+					var task = repo.GenerateRestoreTask(restorePath, (index, [fileInfo]));
+					_taskService.AddTask(backupItemRecord, task);
+				}
+				else
+				{
+					var subIndex = index.GetSubIndex(parentName) ?? throw new Exception("SubIndex not found.");
+					var fileInfo = subIndex.FileInfoArr.First(info => info.Name == fileName);
+					var task = repo.GenerateRestoreTask(restorePath, (subIndex, [fileInfo]));
+					_taskService.AddTask(backupItemRecord, task);
+				}
+			}
+			else
+			{
+				return;
+			}
+		}
+		catch (Exception ex)
+		{
+			var dataIn = new DataArgs();
+			dataIn.AddData(RestoreTag.FailedReasons, ex.Message);
+			Changed?.Invoke(this, dataIn);
+			return;
+		}
 
-        BearBackup.BasicData.Index? index = null;
-        if (repo is MirroringBackup mirror)
-            index = mirror.GetIndex();
-        else if (repo is VersioningBackup version)
-            index = version.GetIndex(recordInfo);
+		var data = new DataArgs();
+		data.AddEmptyData(RestoreTag.SuccessConfirm);
+		Changed?.Invoke(this, data);
+	}
 
-        if (index is null)
-            throw new NotImplementedException();
+	public DataArgs GetData()
+	{
+		return new DataArgs();
+	}
 
-        var data = new DataArgs();
-        data.AddData(RestoreTag.Index, index);
-        return data;
-    }
+	public DataArgs GetData(int id, RecordInfo recordInfo)
+	{
+		var repo = _backupService.GetRepo(id);
 
-    public void Dispose()
-    {
-        _dispatchCenter.RemoveListener(ActionReceived);
+		BearBackup.BasicData.Index? index = null;
+		if (repo is MirroringBackup mirror)
+			index = mirror.GetIndex();
+		else if (repo is VersioningBackup version)
+			index = version.GetIndex(recordInfo);
 
-        Changed.UnsubscribeAll();
-        Changed = null;
+		if (index is null)
+			throw new NotImplementedException();
 
-        GC.SuppressFinalize(this);
-    }
+		var data = new DataArgs();
+		data.AddData(RestoreTag.Index, index);
+		return data;
+	}
+
+	public void Dispose()
+	{
+		_dispatchCenter.RemoveListener(ActionReceived);
+
+		Changed.UnsubscribeAll();
+		Changed = null;
+
+		GC.SuppressFinalize(this);
+	}
 }

@@ -12,7 +12,7 @@ public class RecordInfo : IEquatable<RecordInfo>
     public RecordInfo(string name, DateTime created, string? comment = null)
     {
         if (!name.IsValidFileName())
-            throw new ArgumentException($"Name {name} is not valid. The record name must be a valid file name.");
+            throw new ArgumentException($"Name `{name}` is not valid. The record name must be a valid file name.");
 
         Name = name;
         Created = created;
@@ -21,7 +21,10 @@ public class RecordInfo : IEquatable<RecordInfo>
 
     public RecordInfo(string name, string? comment = null)
     {
-        Name = name;
+		if (!name.IsValidFileName())
+			throw new ArgumentException($"Name `{name}` is not valid. The record name must be a valid file name.");
+
+		Name = name;
         Created = DateTime.UtcNow;
         Comment = comment;
     }

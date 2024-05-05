@@ -8,6 +8,7 @@
 		<UseWPF>true</UseWPF>
 		<ApplicationIcon>Assets\app-icon.ico</ApplicationIcon>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<VersionPrefix>1.1.0</VersionPrefix>
 	</PropertyGroup>
 
 	<ItemGroup>

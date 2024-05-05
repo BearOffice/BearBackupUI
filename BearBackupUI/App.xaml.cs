@@ -14,7 +14,7 @@ namespace BearBackupUI;
 
 public partial class App : Application
 {
-    private IHost _host;
+    private IHost? _host;
 
     [LibraryImport("user32.dll", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
@@ -22,12 +22,10 @@ public partial class App : Application
 
     public T? GetService<T>() where T : class
     {
-        return _host.Services.GetService(typeof(T)) as T;
+        return _host?.Services.GetService(typeof(T)) as T;
     }
 
-#pragma warning disable CS8618
     public App() { }
-#pragma warning restore CS8618
 
     private async void OnStartup(object sender, StartupEventArgs e)
     {
@@ -93,9 +91,7 @@ public partial class App : Application
 
         await _host.StopAsync();
         _host.Dispose();
-#pragma warning disable CS8625
         _host = null;
-#pragma warning restore CS8625
     }
 
     private void OnDispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
@@ -109,7 +105,7 @@ public partial class App : Application
 
     private async void Application_SessionEnding(object sender, SessionEndingCancelEventArgs e)
     {
-        var taskService = _host.Services.GetRequiredService<TaskService>();
+        var taskService = _host?.Services.GetRequiredService<TaskService>() ?? throw new NullReferenceException();
 
         if (taskService.IsRunning || taskService.TaskQueue.Length != 0)
         {

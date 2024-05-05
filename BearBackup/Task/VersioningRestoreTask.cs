@@ -42,7 +42,12 @@ internal class VersioningRestoreTask : IRestoreTask
     private void RestoreIndex(out ExceptionInfo[] exceptions)
     {
         if (_indexToRestore is null) throw new BadBackupException("The specified restore target is null.");
-        AddIndeterminateEvent();
+
+		var restoreDirInfo = new DirectoryInfo(_restorePath);
+		if (!restoreDirInfo.IsEmpty())
+			throw new BadBackupException($"Directory `{_restorePath}` must be empty before restoration.");
+
+		AddIndeterminateEvent();
 
         var es = new List<ExceptionInfo>();
 
