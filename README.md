@@ -30,3 +30,7 @@ You will need to manually download the following nuget package and load it into 
 
 ### Dark mode
 <img width="600" alt="5" src="https://github.com/BearOffice/BearBackupUI/assets/51944655/f58165b3-267b-40e8-bd09-9a7a2b61a963">
+
+### High contrast mode
+<img width="600" alt="6" src="https://github.com/BearOffice/BearBackupUI/assets/51944655/393a5e50-4043-42d9-b54c-e99a765a19dc">
+
