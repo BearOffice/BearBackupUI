@@ -16,7 +16,7 @@ using Wpf.Ui.Appearance;
 
 namespace BearBackupUI.Windows;
 
-public partial class MainWindow : UiWindow
+public partial class MainWindow : FluentWindow
 {
     private readonly IServiceProvider _serviceProvider;
     private readonly DispatchCenter _dispatchCenter;
@@ -31,7 +31,7 @@ public partial class MainWindow : UiWindow
         InitializeComponent();
         DataContext = this;
 
-        _serviceProvider = serviceProvider;
+		_serviceProvider = serviceProvider;
         _dispatchCenter = dispatchCenter;
         _store = store;
 

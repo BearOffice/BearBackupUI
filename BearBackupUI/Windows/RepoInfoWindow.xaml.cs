@@ -8,7 +8,7 @@ using Microsoft.Win32;
 
 namespace BearBackupUI.Windows;
 
-public partial class RepoInfoWindow : UiWindow
+public partial class RepoInfoWindow : FluentWindow
 {
     public BackupItemRecord? BackupItemRecord { get; set; }
     private readonly DispatchCenter _dispatchCenter;

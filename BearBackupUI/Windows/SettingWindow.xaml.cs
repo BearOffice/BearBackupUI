@@ -7,7 +7,7 @@ using Wpf.Ui.Appearance;
 
 namespace BearBackupUI.Windows;
 
-public partial class SettingWindow : UiWindow
+public partial class SettingWindow : FluentWindow
 {
     private readonly DispatchCenter _dispatchCenter;
     private readonly SettingStore _store;
@@ -21,20 +21,23 @@ public partial class SettingWindow : UiWindow
         var data = _store.GetData();
         if (data.TryGetData(SettingTag.Theme, out var theme))
         {
-            var themeType = (ThemeType)(theme ?? throw new NullReferenceException());
+            var themeType = (ApplicationTheme)(theme ?? throw new NullReferenceException());
             switch (themeType)
             {
-                case ThemeType.Light:
+                case ApplicationTheme.Light:
                     LRadioButton.IsChecked = true;
                     break;
-                case ThemeType.Dark:
+                case ApplicationTheme.Dark:
                     DRadioButton.IsChecked = true;
                     break;
-                case ThemeType.Unknown:
-                    SRadioButton.IsChecked = true;
+				case ApplicationTheme.HighContrast:
+					HRadioButton.IsChecked = true;
+					break;
+				case ApplicationTheme.Unknown:
+                    URadioButton.IsChecked = true;
                     break;
                 default:
-                    LRadioButton.IsChecked = true;
+                    URadioButton.IsChecked = true;
                     break;
             }
         }
@@ -72,13 +75,15 @@ public partial class SettingWindow : UiWindow
 
     private void RadioButton_Checked(object sender, RoutedEventArgs e)
     {
-        ThemeType themeType;
+		ApplicationTheme themeType;
         if (sender == LRadioButton)
-            themeType = ThemeType.Light;
+            themeType = ApplicationTheme.Light;
         else if (sender == DRadioButton)
-            themeType = ThemeType.Dark;
-        else if (sender == SRadioButton)
-            themeType = ThemeType.Unknown;
+            themeType = ApplicationTheme.Dark;
+		else if (sender == HRadioButton)
+			themeType = ApplicationTheme.HighContrast;
+		else if (sender == URadioButton)
+            themeType = ApplicationTheme.Unknown;
         else
             throw new NotImplementedException();
 

@@ -8,7 +8,7 @@
 		<UseWPF>true</UseWPF>
 		<ApplicationIcon>Assets\app-icon.ico</ApplicationIcon>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<VersionPrefix>1.1.0</VersionPrefix>
+		<VersionPrefix>2.0.0</VersionPrefix>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -28,7 +28,8 @@
 		<PackageReference Include="BearMarkupLanguage" Version="5.1.0" />
 		<PackageReference Include="LoggingLib" Version="2.0.1" />
 		<PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
-		<PackageReference Include="WPF-UI" Version="2.1.0" />
+		<PackageReference Include="WPF-UI" Version="3.0.4" />
+		<PackageReference Include="WPF-UI.Tray" Version="3.0.4" />
 	</ItemGroup>
 
 	<ItemGroup>

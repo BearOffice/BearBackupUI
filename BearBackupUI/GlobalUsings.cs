@@ -8,3 +8,5 @@ global using System.Windows.Media.Imaging;
 global using Wpf.Ui.Controls;
 global using LoggingLib;
 global using MessageBox = System.Windows.MessageBox;
+global using MessageBoxButton = System.Windows.MessageBoxButton;
+global using MessageBoxResult = System.Windows.MessageBoxResult;

@@ -8,9 +8,9 @@ namespace BearBackupUI.Services;
 
 public class ConfigService
 {
-    public ThemeType ThemeType
+    public ApplicationTheme ThemeType
     {
-        get => _ml.GetValue<ThemeType>("theme type");
+        get => _ml.GetValue<ApplicationTheme>("theme type");
         set => _ml.ChangeValue("theme type", value);
     }
     public bool LaunchMinimized
@@ -56,8 +56,8 @@ public class ConfigService
         var configPath = Path.Combine(BasePath, "config");
         if (!File.Exists(configPath))
         {
-            _ml = new BearML(configPath);
-            _ml.AddKeyValue("theme type", ThemeType.Unknown);
+			_ml = new BearML(configPath);
+            _ml.AddKeyValue("theme type", ApplicationTheme.Unknown);
             _ml.AddKeyValue("launch minimized", false);
             _ml.AddKeyValue("auto startup", false);
             _ml.AddKeyValue("check hash", false);

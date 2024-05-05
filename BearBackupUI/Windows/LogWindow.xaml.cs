@@ -5,7 +5,7 @@ using BearBackupUI.Stores;
 
 namespace BearBackupUI.Windows;
 
-public partial class LogWindow : UiWindow
+public partial class LogWindow : FluentWindow
 {
     private readonly DispatchCenter _dispatchCenter;
     private readonly LogStore _store;

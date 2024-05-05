@@ -9,7 +9,7 @@ using System.Windows.Markup.Primitives;
 
 namespace BearBackupUI.Windows;
 
-public partial class AddRecordWindow : UiWindow
+public partial class AddRecordWindow : FluentWindow
 {
     public BackupItemRecord? BackupItemRecord { get; set; }
     private readonly DispatchCenter _dispatchCenter;

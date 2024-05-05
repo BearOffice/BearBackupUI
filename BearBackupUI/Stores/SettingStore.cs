@@ -26,7 +26,7 @@ public class SettingStore : IStore
     {
         if (e.Type is SettingAction.ChangeTheme)
         {
-            _configService.ThemeType = (ThemeType)(e.GetAnonymousData() ?? throw new NullReferenceException());
+            _configService.ThemeType = (ApplicationTheme)(e.GetAnonymousData() ?? throw new NullReferenceException());
         }
         else if (e.Type is SettingAction.ChangeStartup)
         {

@@ -5,21 +5,23 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BearBackupUI"
         xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+        xmlns:tray="http://schemas.lepo.co/wpfui/2022/xaml/tray"
         mc:Ignorable="d" Width="0" Height="0" AllowsTransparency="True" Background="Transparent"
         WindowStyle="None" MinHeight="0" MinWidth="0" ResizeMode="NoResize"
-        Title="NotifyIcon" Visibility="Hidden" ShowInTaskbar="False" >
-    <ui:NotifyIcon x:Name="NotifyIcon" 
+        Title="NotifyIcon" Visibility="Hidden" ShowInTaskbar="False">
+    
+    <tray:NotifyIcon x:Name="NotifyIcon" 
             Grid.Row="0"
             FocusOnLeftClick="False"
             MenuOnRightClick="True"
             LeftClick="NotifyIcon_LeftClick"
             Icon="pack://application:,,,/Assets/app-icon-s.png"
             TooltipText="Bear Backup UI" IsManipulationEnabled="True">
-        <ui:NotifyIcon.Menu>
+        <tray:NotifyIcon.Menu>
             <ContextMenu KeyUp="ContextMenu_KeyUp">
                 <MenuItem Header="Open" InputGestureText="(O)" Click="OpenMenuItem_Click" />
                 <MenuItem Header="Quit" InputGestureText="(Q)" Click="QuitMenuItem_Click" />
             </ContextMenu>
-        </ui:NotifyIcon.Menu>
-    </ui:NotifyIcon>
+        </tray:NotifyIcon.Menu>
+    </tray:NotifyIcon>
 </Window>

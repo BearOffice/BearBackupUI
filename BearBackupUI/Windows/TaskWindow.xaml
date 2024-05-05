@@ -1,4 +1,4 @@
-﻿<ui:UiWindow x:Class="BearBackupUI.Windows.TaskWindow"
+﻿<ui:FluentWindow x:Class="BearBackupUI.Windows.TaskWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -10,7 +10,7 @@
         Title="Bear Backup UI - Task" Height="450" Width="800" Closed="OnClosed"
         ExtendsContentIntoTitleBar="True" MinHeight="450" MinWidth="800"
         WindowBackdropType="Mica" ResizeMode="CanResize">
-    <ui:UiWindow.Resources>
+    <ui:FluentWindow.Resources>
         <DataTemplate x:Key="CurrentTaskTemplate" DataType="{x:Type current:TaskViewObject}">
             <StackPanel Margin="5,1,5,1">
                 <TextBlock FontSize="16" Text="{Binding TaskTitle}"
@@ -48,7 +48,7 @@
                            Foreground="{ui:ThemeResource TextFillColorSecondaryBrush}"/>
             </StackPanel>
         </DataTemplate>
-    </ui:UiWindow.Resources>
+    </ui:FluentWindow.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
@@ -88,7 +88,7 @@
                                                 ContentTemplate="{StaticResource CurrentTaskTemplate}" 
                                                 Grid.Row="0" Margin="0,5,0,2" MinHeight="60" 
                                                 VerticalAlignment="Center" VerticalContentAlignment="Center"/>
-                                <ProgressBar x:Name="TaskProgressBar" Grid.Row="1" Value="0"/>
+                                <ProgressBar x:Name="TaskProgressBar" Grid.Row="1" Value="0" Margin="0,0,0,5"/>
                                 <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
                                     <Label x:Name="ProgressLabel" Style="{StaticResource LabelSecondaryStyle}" Padding="0" Content="0"/>
                                     <Label Style="{StaticResource LabelSecondaryStyle}" Padding="0" Content="% / "/>
@@ -100,7 +100,7 @@
                         <Label Style="{StaticResource ControlTitleStyle}" Grid.Row="2"
                             Content="Completed tasks" Margin="0,10,0,6"/>
                         <Border Style="{StaticResource ElementBorderStyle}" Grid.Row="3">
-                            <ListView x:Name="CompletedListView" SelectionMode="Single" 
+                            <ui:ListView x:Name="CompletedListView" SelectionMode="Single" 
                                       ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                                       ItemTemplate="{StaticResource CompletedTaskTemplate}"
                                       d:ItemsSource="{d:SampleData ItemCount=10}" />
@@ -115,7 +115,7 @@
                         <Label Style="{StaticResource ControlTitleStyle}" Grid.Row="0"
                             Content="Task queue" Margin="0,0,0,6"/>
                         <Border Style="{StaticResource ElementBorderStyle}" Grid.Row="1">
-                            <ListView x:Name="TaskQueueView" SelectionMode="Single"
+                            <ui:ListView x:Name="TaskQueueView" SelectionMode="Single"
                                       ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                                       ItemTemplate="{StaticResource TaskTemplate}"
                                       d:ItemsSource="{d:SampleData ItemCount=20}"
@@ -129,15 +129,15 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <ui:Button Grid.Column="0" HorizontalAlignment="Stretch" Margin="0,0,5,0" Height="32"
-                                    Content="Remove" Icon="TrayItemRemove24" IsEnabled="{Binding SelectedItem, 
+                                    Content="Remove" Icon="{ui:SymbolIcon TrayItemRemove24}" IsEnabled="{Binding SelectedItem, 
                                     ElementName=TaskQueueView, Converter={StaticResource NullToBooleanConverter}}" 
                                     Click="RemoveButton_Click"/>
                             <ui:Button x:Name="UpButton" Grid.Column="1" HorizontalAlignment="Stretch" Margin="2.5,0,2.5,0" Height="32"
-                                    Content="Up" Icon="ArrowUp24" IsEnabled="{Binding SelectedItem, 
+                                    Content="Up" Icon="{ui:SymbolIcon ArrowUp24}" IsEnabled="{Binding SelectedItem, 
                                     ElementName=TaskQueueView, Converter={StaticResource NullToBooleanConverter}}"
                                     Click="UpButton_Click"/>
                             <ui:Button x:Name="DownButton" Grid.Column="2" HorizontalAlignment="Stretch" Margin="5,0,0,0" Height="32"
-                                    Content="Down" Icon="ArrowDown24" IsEnabled="{Binding SelectedItem, 
+                                    Content="Down" Icon="{ui:SymbolIcon ArrowDown24}" IsEnabled="{Binding SelectedItem, 
                                     ElementName=TaskQueueView, Converter={StaticResource NullToBooleanConverter}}"
                                     Click="DownButton_Click"/>
                         </Grid>
@@ -146,4 +146,4 @@
             </Border>
         </Grid>
     </Grid>
-</ui:UiWindow>
+</ui:FluentWindow>

@@ -1,4 +1,4 @@
-﻿<ui:UiWindow x:Class="BearBackupUI.Windows.AddRepoWindow"
+﻿<ui:FluentWindow x:Class="BearBackupUI.Windows.AddRepoWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -54,7 +54,7 @@
                                 Content="Repository path" />
                             <ui:TextBox x:Name="RepoPathTextBox" Grid.Column="1"
                                 PlaceholderText="Location of the repository"/>
-                            <ui:Button Grid.Column="2" Icon="FolderOpen24" HorizontalAlignment="Right" Margin="10,0,0,0" 
+                            <ui:Button Grid.Column="2" Icon="{ui:SymbolIcon FolderOpen24}" HorizontalAlignment="Right" Margin="10,0,0,0" 
                                        Click="RepoPathButton_Click"/>
                         </Grid>
                         <Grid>
@@ -67,10 +67,10 @@
                                 Content="Backup target path" />
                             <ui:TextBox x:Name="BackupTargetTextBox" Grid.Column="1"
                                 PlaceholderText="Location of the target to backup"/>
-                            <ui:Button Grid.Column="2" Icon="FolderOpen24" HorizontalAlignment="Right" Margin="10,0,0,0" 
+                            <ui:Button Grid.Column="2" Icon="{ui:SymbolIcon FolderOpen24}" HorizontalAlignment="Right" Margin="10,0,0,0" 
                                        Click="BackupTargetButton_Click"/>
                         </Grid>
-                        <ui:NavigationSeparator Margin="0,8,0,6"/>
+                        <Separator Margin="0,8,0,6"/>
                     </StackPanel>
 
                     <StackPanel Grid.Row="1">
@@ -87,7 +87,7 @@
             </Border>
 
             <ui:Button Grid.Row="1" HorizontalAlignment="Right" Margin="5,5,5,5" Width="125"
-                    Content="Add" Appearance="Primary" Icon="FolderAdd24" Click="AddButton_Click"/>
+                    Content="Add" Appearance="Primary" Icon="{ui:SymbolIcon FolderAdd24}" Click="AddButton_Click"/>
         </Grid>
     </Grid>
-</ui:UiWindow>
+</ui:FluentWindow>

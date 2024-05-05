@@ -1,4 +1,4 @@
-﻿<ui:UiWindow x:Class="BearBackupUI.Windows.SettingWindow"
+﻿<ui:FluentWindow x:Class="BearBackupUI.Windows.SettingWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -15,10 +15,10 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <ui:TitleBar
-        Title="Bear Backup UI - Settings" Grid.Row="0"
-        Icon="{StaticResource Logo}" />
+            Title="Bear Backup UI - Settings" Grid.Row="0"
+            Icon="{StaticResource Logo}" />
 
-        <ScrollViewer Grid.Row="1" Padding="0,0,-14,0">
+        <ScrollViewer Grid.Row="1">
             <Grid Margin="22,0,22,8">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -26,7 +26,7 @@
                 </Grid.RowDefinitions>
                 <Label Grid.Row="0" Style="{StaticResource PageTitleStyle}" Margin="0,5,0,5">Settings</Label>
                 <StackPanel Grid.Row="1" Margin="5,10,5,5">
-                    <ui:CardExpander Margin="0,0,0,12" Icon="Color24" >
+                    <ui:CardExpander Margin="0,0,0,12" Icon="{ui:SymbolIcon Color24}" >
                         <ui:CardExpander.Header>
                             <StackPanel>
                                 <Label Style="{StaticResource LabelStyle}" Padding="0"
@@ -39,11 +39,12 @@
                         <StackPanel Margin="38,0,0,0">
                             <RadioButton x:Name="LRadioButton" Content="Light" Checked="RadioButton_Checked" />
                             <RadioButton x:Name="DRadioButton" Content="Dark" Checked="RadioButton_Checked" />
-                            <RadioButton x:Name="SRadioButton" Content="Use system setting" Checked="RadioButton_Checked" />
+                            <RadioButton x:Name="HRadioButton" Content="High contrast" Checked="RadioButton_Checked" />
+                            <RadioButton x:Name="URadioButton" Content="Use system setting" Checked="RadioButton_Checked" />
                         </StackPanel>
                     </ui:CardExpander>
 
-                    <ui:CardExpander Margin="0,0,0,12" Icon="Open24" >
+                    <ui:CardExpander Margin="0,0,0,12" Icon="{ui:SymbolIcon Open24}" >
                         <ui:CardExpander.Header>
                             <StackPanel>
                                 <Label Style="{StaticResource LabelStyle}" Padding="0"
@@ -95,7 +96,7 @@
                         </StackPanel>
                     </ui:CardExpander>
 
-                    <ui:CardExpander Margin="0,0,0,12" Icon="TopSpeed24" >
+                    <ui:CardExpander Margin="0,0,0,12" Icon="{ui:SymbolIcon TopSpeed24}" >
                         <ui:CardExpander.Header>
                             <StackPanel>
                                 <Label Style="{StaticResource LabelStyle}" Padding="0"
@@ -131,4 +132,4 @@
             </Grid>
         </ScrollViewer>
     </Grid>
-</ui:UiWindow>
+</ui:FluentWindow>

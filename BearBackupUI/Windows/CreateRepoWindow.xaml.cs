@@ -9,7 +9,7 @@ using System.IO;
 
 namespace BearBackupUI.Windows;
 
-public partial class CreateRepoWindow : UiWindow
+public partial class CreateRepoWindow : FluentWindow
 {
     private readonly DispatchCenter _dispatchCenter;
     private readonly CreateRepoStore _store;

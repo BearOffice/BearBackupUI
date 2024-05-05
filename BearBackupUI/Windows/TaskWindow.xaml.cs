@@ -15,7 +15,7 @@ using Stopwatch = BearBackupUI.Helpers.Stopwatch;
 
 namespace BearBackupUI.Windows;
 
-public partial class TaskWindow : UiWindow
+public partial class TaskWindow : FluentWindow
 {
     private readonly DispatchCenter _dispatchCenter;
     private readonly TaskStore _store;

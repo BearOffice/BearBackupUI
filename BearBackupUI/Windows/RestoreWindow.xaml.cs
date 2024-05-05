@@ -12,7 +12,7 @@ using TreeViewItem = System.Windows.Controls.TreeViewItem;
 
 namespace BearBackupUI.Windows;
 
-public partial class RestoreWindow : UiWindow
+public partial class RestoreWindow : FluentWindow
 {
     public BackupItemRecord? BackupItemRecord { get; set; }
     public RecordInfo? RecordInfo { get; set; }

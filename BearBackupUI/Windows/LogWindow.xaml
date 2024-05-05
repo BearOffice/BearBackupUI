@@ -1,4 +1,4 @@
-﻿<ui:UiWindow x:Class="BearBackupUI.Windows.LogWindow"
+﻿<ui:FluentWindow x:Class="BearBackupUI.Windows.LogWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -30,7 +30,7 @@
                         <ui:SymbolIcon Symbol="Delete24" />
                     </ui:MenuItem.Icon>
                 </ui:MenuItem>
-                <ui:NavigationSeparator />
+                <Separator />
                 <ui:MenuItem x:Name="IncrMenuItem" Header="Font increase" Click="IncrMenuItem_Click">
                     <ui:MenuItem.Icon>
                         <ui:SymbolIcon Symbol="FontIncrease24" />
@@ -52,4 +52,4 @@
             </Border>
         </Grid>
     </Grid>
-</ui:UiWindow>
+</ui:FluentWindow>
