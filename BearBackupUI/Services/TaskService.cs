@@ -6,13 +6,15 @@ using System.Text;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System;
+using Stopwatch = BearBackupUI.Helpers.Stopwatch;
 
 namespace BearBackupUI.Services;
 
 public class TaskService
 {
     public event EventHandler<ProgressEventArgs>? Executing;
-    public event EventHandler? TasksChanged;
+	public event EventHandler<TimeSpan>? TimeElapsed;
+	public event EventHandler? TasksChanged;
     public event EventHandler<Exception>? FaultOccurred;
     public (BackupItemRecord, ITask)? RunningTask { get; private set; }
     public (BackupItemRecord, ITask)[] TaskQueue { get => [.. _waitingTasks]; }
@@ -195,12 +197,18 @@ public class TaskService
                     else
                         finalArgs = args;
                 };
-
-                ExceptionInfo[]? exceptions = null;
+				var sw = new Stopwatch(65);
+                sw.Signal += e => TimeElapsed?.Invoke(this, e);
+                   
+				ExceptionInfo[]? exceptions = null;
                 try
                 {
+                    sw.Start();
+
                     task.Execute(out var ex);
                     exceptions = ex ?? [];
+
+                    sw.Stop();
                 }
                 catch (Exception e)
                 {

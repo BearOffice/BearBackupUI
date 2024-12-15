@@ -131,7 +131,8 @@
                         <Label Style="{StaticResource ControlTitleStyle}" Grid.Row="0"
                             Content="Records" Margin="0,0,0,6"/>
                         <Border Style="{StaticResource ElementBorderStyle}" Grid.Row="1">
-                            <ui:ListView x:Name="RecordListView" SelectionMode="Single"
+                            <ui:ListView x:Name="RecordListView" SelectionMode="Extended"
+                                         SelectionChanged="RecordListView_SelectionChanged"
                                       ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                                       ItemTemplate="{StaticResource RecordTemplate}"
                                       d:ItemsSource="{d:SampleData ItemCount=5}"/>
@@ -143,14 +144,12 @@
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
-                            <ui:Button Grid.Column="0" HorizontalAlignment="Stretch" Margin="0,0,5,0" Height="32"
+                            <ui:Button x:Name="RemoveButton" Grid.Column="0" HorizontalAlignment="Stretch" Margin="0,0,5,0" Height="32"
                                        Content="Remove" Icon="{ui:SymbolIcon TrayItemRemove24}"
-                                       IsEnabled="{Binding SelectedItem, ElementName=RecordListView, 
-                                            Converter={StaticResource NullToBooleanConverter}}" Click="RemoveRecordButton_Click"/>
-                            <ui:Button Grid.Column="1" HorizontalAlignment="Stretch" Margin="2.5,0,2.5,0" Height="32"
+                                       IsEnabled="False" Click="RemoveRecordButton_Click"/>
+                            <ui:Button x:Name="RestoreButton" Grid.Column="1" HorizontalAlignment="Stretch" Margin="2.5,0,2.5,0" Height="32"
                                        Content="Restore" Icon="{ui:SymbolIcon Save24}"
-                                       IsEnabled="{Binding SelectedItem, ElementName=RecordListView, 
-                                            Converter={StaticResource NullToBooleanConverter}}" Click="RestoreButton_Click"/>
+                                       IsEnabled="False" Click="RestoreButton_Click"/>
                             <ui:Button Grid.Column="2" HorizontalAlignment="Stretch" Margin="5,0,0,0" Height="32"
                                        Content="Add" Appearance="Primary" Icon="{ui:SymbolIcon TrayItemAdd24}" Click="AddRecordButton_Click"
                                        IsEnabled="{Binding SelectedItem, ElementName=RepoListView, 

@@ -6,4 +6,5 @@ public enum TaskTag
     TaskQueue,
     CompletedTasks,
     TaskProgress,
+    TimeElapsed,
 }

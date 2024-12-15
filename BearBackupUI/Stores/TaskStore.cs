@@ -23,9 +23,18 @@ public class TaskStore : IStore
         _taskService = taskService;
         _taskService.Executing += TaskService_Executing;
         _taskService.TasksChanged += TaskService_TasksChanged;
+		_taskService.TimeElapsed += TaskService_TimeElapsed;
     }
 
-    private void TaskService_Executing(object? sender, ProgressEventArgs e)
+	private void TaskService_TimeElapsed(object? sender, TimeSpan e)
+	{
+		var data = new DataArgs();
+		data.AddData(TaskTag.TimeElapsed, e);
+
+		Changed?.Invoke(this, data);
+	}
+
+	private void TaskService_Executing(object? sender, ProgressEventArgs e)
     {
         DataArgs? data = null;
         if (!e.IsProgressing && _taskService.TaskQueue.Length == 0)

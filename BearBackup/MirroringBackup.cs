@@ -168,7 +168,12 @@ public class MirroringBackup : IBackup
         return new MirroringRemoveTask(this, recordInfo);
     }
 
-    public IRestoreTask GenerateRestoreTask(string restorePath, Index index)
+	public IRemoveTask GenerateRemoveTask(RecordInfo[] recordInfoArr)
+	{
+		return new MirroringRemoveTask(this, recordInfoArr);
+	}
+
+	public IRestoreTask GenerateRestoreTask(string restorePath, Index index)
     {
         return new MirroringRestoreTask(this, restorePath, index);
     }

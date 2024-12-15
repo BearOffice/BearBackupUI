@@ -129,16 +129,16 @@ public class MainStore : IStore
         }
         else if (e.Type is MainAction.RemoveRecord)
         {
-            (var item, var record) = ((BackupItemRecord, RecordInfo))(e.GetAnonymousData() ?? throw new NullReferenceException());
+            (var item, var records) = ((BackupItemRecord, RecordInfo[]))(e.GetAnonymousData() ?? throw new NullReferenceException());
             var repo = _backupService.GetRepo(item.ID);
             if (repo is MirroringBackup mirror)
             {
-                var task = mirror.GenerateRemoveTask(record);
+                var task = mirror.GenerateRemoveTask(records);
                 _taskService.AddTask(item, task);
             }
             else if (repo is VersioningBackup version)
             {
-                var task = version.GenerateRemoveTask(record);
+                var task = version.GenerateRemoveTask(records);
                 _taskService.AddTask(item, task);
             }
             else

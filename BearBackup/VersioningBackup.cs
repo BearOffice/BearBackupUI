@@ -105,7 +105,7 @@ public partial class VersioningBackup : IBackup
 		return [.. _recordsCache.Keys];
 	}
 
-	public Index GetIndex(RecordInfo recordInfo)
+	public Index GetIndex(RecordInfo recordInfo, bool threadSafe = true)
 	{
 		var recs = GetRecordInfo();
 		if (recs is null || !recs.Contains(recordInfo))
@@ -121,7 +121,7 @@ public partial class VersioningBackup : IBackup
 		var indexPath = System.IO.Path.Combine(IndexPath, recordInfo.Name);
 		if (!File.Exists(indexPath)) throw new BadBackupException("No index file associates with the specified record.");
 
-		var index = Writer.ReadIndexFile(indexPath) ?? throw new BadBackupException("Index file is broken.");
+		var index = Writer.ReadIndexFile(indexPath, threadSafe) ?? throw new BadBackupException("Index file is broken.");
 
 		if (_recordsCache is not null) _recordsCache[recordInfo] = index;
 
@@ -219,6 +219,11 @@ public partial class VersioningBackup : IBackup
 	public IRemoveTask GenerateRemoveTask(RecordInfo recordInfo)
 	{
 		return new VersioningRemoveTask(this, recordInfo);
+	}
+
+	public IRemoveTask GenerateRemoveTask(RecordInfo[] recordInfoArr)
+	{
+		return new VersioningRemoveTask(this, recordInfoArr);
 	}
 
 	public IRestoreTask GenerateRestoreTask(string restorePath, Index index)

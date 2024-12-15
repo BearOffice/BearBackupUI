@@ -3,5 +3,7 @@
                     xmlns:helper="clr-namespace:BearBackupUI.Helpers">
     <helper:IntToBooleanConverter x:Key="IntToBooleanConverter" />
     <helper:NullToBooleanConverter x:Key="NullToBooleanConverter" />
+    <helper:SingleListToBooleanConverter x:Key="SingleListToBooleanConverter" />
+    <helper:MultiListToBooleanConverter x:Key="MultiListToBooleanConverter" />
     <helper:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
 </ResourceDictionary>
