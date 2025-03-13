@@ -121,7 +121,6 @@ public class MirroringBackupTask : IBackupTask
                 {
                     File.Copy(sourcePath, createPath);
                     File.SetAttributes(createPath, FileAttributes.Normal);
-                    System.Threading.Tasks.Task.Delay(1000).Wait();
                 }
                 catch (Exception e)
                 {
