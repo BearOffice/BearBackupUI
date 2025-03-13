@@ -12,7 +12,7 @@ namespace BearBackupUI.Services;
 
 public class TaskService
 {
-    public event EventHandler<ProgressEventArgs>? Executing;
+    public event EventHandler<ProgressEventArgs>? ProgressChanged;
 	public event EventHandler<TimeSpan>? TimeElapsed;
 	public event EventHandler? TasksChanged;
     public event EventHandler<Exception>? FaultOccurred;
@@ -20,6 +20,7 @@ public class TaskService
     public (BackupItemRecord, ITask)[] TaskQueue { get => [.. _waitingTasks]; }
     public CompletedTaskInfo[] CompletedTasks { get => [.. _completedTasks]; }
     public bool IsRunning { get => RunningTask is not null; }
+    public ProgressEventArgs LatestProgress { get; private set; }
     private readonly BackupService _backupService;
     private readonly ObservableCollection<(BackupItemRecord, ITask)> _waitingTasks;
     private readonly List<CompletedTaskInfo> _completedTasks;
@@ -189,26 +190,32 @@ public class TaskService
                     _waitingTasks.RemoveAt(0);
                 }
 
-                var task = RunningTask.Value.Item2;
-                task.Progress += args =>
+                void progressInvoke(ProgressEventArgs args)
                 {
                     if (args.IsProgressing)
-                        Executing?.Invoke(this, args);
+                        ProgressChangedInvoke(this, args);
                     else
                         finalArgs = args;
-                };
-				var sw = new Stopwatch(65);
-                sw.Signal += e => TimeElapsed?.Invoke(this, e);
-                   
+                }
+
+                var task = RunningTask.Value.Item2;
+                task.Progress += progressInvoke;
+
 				ExceptionInfo[]? exceptions = null;
                 try
                 {
+                    void swInvoke(TimeSpan e) => TimeElapsed?.Invoke(this, e);
+                    var sw = new Stopwatch(65);
+                    sw.Signal += swInvoke;
+
                     sw.Start();
 
                     task.Execute(out var ex);
                     exceptions = ex ?? [];
 
                     sw.Stop();
+
+                    sw.Signal -= swInvoke;
                 }
                 catch (Exception e)
                 {
@@ -231,7 +238,7 @@ public class TaskService
                     _backupService.ChangeRepoConfig(record.ID, record.Item with { LastBackupDateTime = DateTime.UtcNow });
 
                 lock (_locker) { count = _waitingTasks.Count; }
-                if (count != 0) Executing?.Invoke(this, finalArgs ?? 
+                if (count != 0) ProgressChangedInvoke(this, finalArgs ?? 
                     new ProgressEventArgs { IsDeterminate = true, IsProgressing = false });
 
                 _completedTasks.Add(GenerateCompletedTaskInfo(
@@ -239,16 +246,24 @@ public class TaskService
 
                 if (!isFaulted && task is IBackupTask)
                     Logging.Info($"Backup task finished. Backup path: `{record.Item.BackupPath}`");
+
+                task.Progress -= progressInvoke;
             }
 
             RunningTask = null;
             _token.Dispose();
             _token = null;
             _backupService.ClearCache();
-            Executing?.Invoke(this, finalArgs ?? new ProgressEventArgs { IsDeterminate = true, IsProgressing = false });
+            ProgressChangedInvoke(this, finalArgs ?? new ProgressEventArgs { IsDeterminate = true, IsProgressing = false });
 
             StartTasks();  // Make sure no tasks left.
         });
+    }
+
+    private void ProgressChangedInvoke(object? sender, ProgressEventArgs e)
+    {
+        LatestProgress = e;
+        ProgressChanged?.Invoke(sender, e);
     }
 
     private static string GenerateBackupRecordName()

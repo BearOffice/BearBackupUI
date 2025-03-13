@@ -1,5 +1,6 @@
 ﻿using BearBackup.BasicData;
 using BearBackup.Tools;
+using System.Linq;
 using System.Runtime;
 
 namespace BearBackup.Task;
@@ -47,7 +48,11 @@ public class MirroringBackupTask : IBackupTask
         (var mirrorFileUnique, var targetFileUnique) = IndexComparison.DiffFileInfo(mirrorIndex, targetIndex,
             _backup.FileComparer, _backup.DirComparer, considerAttr: false);
 
-        var totalNum = mirrorDirUnique.Length + targetDirUnique.Length + mirrorFileUnique.Length + targetFileUnique.Length;
+
+        var totalNum = mirrorFileUnique.Concat(targetFileUnique)
+                                       .Select(i => i.Item2.Length)
+                                       .Aggregate(0, (acc, i) => acc += i)
+                       + 2;  // 2 -> Treat mirror dirs + target dirs as 2 batches
         var count = 0;
         AddEvent(totalNum, count, true);
 
@@ -64,13 +69,13 @@ public class MirroringBackupTask : IBackupTask
                 {
                     es.Add(new ExceptionInfo(deletePath, FileType.File, e));
                 }
-            }
 
-            count++;
-            AddEvent(totalNum, count, true);
+                count++;
+                AddEvent(totalNum, count, true);
+            }
         }
 
-        // reverse -> reverse [a/b, a/b/c] to [a/b/c, /ab] to ensure the deleted dir is empty (does not contain sub dir).
+        // reverse -> reverse [a/b, a/b/c] to [a/b/c, a/b] to ensure the deleted dir is empty (does not contain sub dir).
         foreach ((var _, var dirInfo) in mirrorDirUnique.Reverse())
         {
             var deletePath = Path.Combine(_backup.MirrorPath, dirInfo.FullName);
@@ -82,10 +87,9 @@ public class MirroringBackupTask : IBackupTask
             {
                 es.Add(new ExceptionInfo(deletePath, FileType.Dir, e));
             }
-
-            count++;
-            AddEvent(totalNum, count, true);
         }
+        count++;
+        AddEvent(totalNum, count, true);
 
         // The files or dirs failed to create cannot be left in the new index.
         foreach ((var _, var dirInfo) in targetDirUnique)
@@ -102,10 +106,9 @@ public class MirroringBackupTask : IBackupTask
 
                 es.Add(new ExceptionInfo(createPath, FileType.Dir, e));
             }
-
-            count++;
-            AddEvent(totalNum, count, true);
         }
+        count++;
+        AddEvent(totalNum, count, true);
 
         foreach ((var subIndex, var fileInfoArr) in targetFileUnique)
         {
@@ -118,16 +121,17 @@ public class MirroringBackupTask : IBackupTask
                 {
                     File.Copy(sourcePath, createPath);
                     File.SetAttributes(createPath, FileAttributes.Normal);
+                    System.Threading.Tasks.Task.Delay(1000).Wait();
                 }
                 catch (Exception e)
                 {
                     subIndex.RemoveFileInfo(fileInfo);
                     es.Add(new ExceptionInfo(createPath, FileType.File, e));
                 }
-            }
 
-            count++;
-            AddEvent(totalNum, count, true);
+                count++;
+                AddEvent(totalNum, count, true);
+            }
         }
 
         Writer.WriteIndex(_backup.IndexPath, targetIndex);

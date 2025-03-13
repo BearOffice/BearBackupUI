@@ -80,10 +80,10 @@ public partial class RestoreWindow : FluentWindow
         var action = new ActionArgs(RestoreAction.Restore);
         action.AddData(RestoreTag.RestorePath, dialog.FolderName);
 #pragma warning disable CS8602, CS8604
-		action.AddData(RestoreTag.BackupItemRecord, BackupItemRecord);
-		action.AddData(RestoreTag.RecordInfo, RecordInfo);
+        action.AddData(RestoreTag.BackupItemRecord, BackupItemRecord);
+        action.AddData(RestoreTag.RecordInfo, RecordInfo);
 #pragma warning restore CS8602, CS8604
-		action.AddEmptyData(RestoreTag.RestoreAll);
+        action.AddEmptyData(RestoreTag.RestoreAll);
         _dispatchCenter.DispatchEvent(action, newThread: true);
 
         _isWaiting = true;

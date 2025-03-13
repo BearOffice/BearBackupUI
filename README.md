@@ -7,8 +7,10 @@ Support for file versioning and mirroring. This application **even** supports da
 ## How to use
 1. Select the repository type (versioning / mirroring) and the repository path.  
    The repository is used to manage and store the backup data.
-3. Select the target path for the backup.
-4. Create.
+2. Select the target path for the backup.
+3. Create.
+
+** *Repository* means the place where backed up data is stored.
 
 ## Build this application manually
 You will need to manually download the following nuget package and load it into the project before you build it.  

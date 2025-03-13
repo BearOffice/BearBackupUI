@@ -21,26 +21,28 @@ public class TaskStore : IStore
         _dispatchCenter.AddListener(typeof(TaskAction), ActionReceived);
 
         _taskService = taskService;
-        _taskService.Executing += TaskService_Executing;
+        _taskService.ProgressChanged += TaskService_ProgressChanged;
         _taskService.TasksChanged += TaskService_TasksChanged;
-		_taskService.TimeElapsed += TaskService_TimeElapsed;
+        _taskService.TimeElapsed += TaskService_TimeElapsed;
     }
 
-	private void TaskService_TimeElapsed(object? sender, TimeSpan e)
-	{
-		var data = new DataArgs();
-		data.AddData(TaskTag.TimeElapsed, e);
-
-		Changed?.Invoke(this, data);
-	}
-
-	private void TaskService_Executing(object? sender, ProgressEventArgs e)
+    private void TaskService_TimeElapsed(object? sender, TimeSpan e)
     {
-        DataArgs? data = null;
-        if (!e.IsProgressing && _taskService.TaskQueue.Length == 0)
-            data = GetData();
-        data ??= new DataArgs();
+        var data = new DataArgs();
+        data.AddData(TaskTag.TimeElapsed, e);
 
+        Changed?.Invoke(this, data);
+    }
+
+    private void TaskService_ProgressChanged(object? sender, ProgressEventArgs e)
+    {
+        if (!e.IsProgressing && _taskService.TaskQueue.Length == 0)
+        {
+            Changed?.Invoke(this, GetData());  // TaskTag.TaskProgress is already contained in GetData()
+            return;
+        }
+
+        var data = new DataArgs();
         data.AddData(TaskTag.TaskProgress, new TaskProgressArgs
         {
             IsDeterminate = e.IsDeterminate,
@@ -77,6 +79,15 @@ public class TaskStore : IStore
 #pragma warning restore CS8604
         data.AddData(TaskTag.TaskQueue, _taskService.TaskQueue);
         data.AddData(TaskTag.CompletedTasks, _taskService.CompletedTasks);
+
+        var e = _taskService.LatestProgress;
+        data.AddData(TaskTag.TaskProgress, new TaskProgressArgs
+        {
+            IsDeterminate = e.IsDeterminate,
+            Percentage = e.TotalNum == 0 ? 0 : (double)e.CompletedNum / e.TotalNum,
+            IsFinished = !e.IsProgressing,
+            IsLastTask = _taskService.TaskQueue.Length == 0,
+        });
 
         return data;
     }

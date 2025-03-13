@@ -28,7 +28,7 @@ public class MainStore : IStore
         _backupService = backupService;
         _configService = configService;
 
-        _taskService.Executing += TaskService_Executing;
+        _taskService.ProgressChanged += TaskService_ProgressChanged;
         _taskService.FaultOccurred += TaskService_FaultOccurred;
 
         _token = new OnUsingToken();
@@ -51,7 +51,7 @@ public class MainStore : IStore
         Changed?.Invoke(this, data);
     }
 
-    private void TaskService_Executing(object? sender, ProgressEventArgs e)
+    private void TaskService_ProgressChanged(object? sender, ProgressEventArgs e)
     {
         // Record will remove the changes inside the repo and will have no effect on BackupRepoChanged.
         // -> manually trigger the update event.

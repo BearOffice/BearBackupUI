@@ -82,7 +82,8 @@ public class VersioningBackupTask : IBackupTask
             }
         }
 
-        var totalNum = targetFileUnique.Length;
+        var totalNum = targetFileUnique.Select(i => i.Item2.Length)
+                                       .Aggregate(0, (acc, i) => acc += i);
         var count = 0;
         AddEvent(totalNum, count, true);
 
@@ -94,7 +95,13 @@ public class VersioningBackupTask : IBackupTask
             foreach (var fileInfo in fileInfoArr)
             {
                 var hash = fileInfo.SHA1 ?? throw new Exception("Unreachable.");
-                if (blobHashes.Contains(hash)) continue;
+                if (blobHashes.Contains(hash))
+                {
+                    count++;
+                    AddEvent(totalNum, count, true);
+
+                    continue;
+                }
 
                 var fileFullName = subIndex.GetFileFullName(fileInfo);
                 var sourcePath = Path.Combine(_backupTarget, fileFullName);
@@ -119,10 +126,10 @@ public class VersioningBackupTask : IBackupTask
                 }
 
                 blobHashes.Add(hash);
-            }
 
-            count++;
-            AddEvent(totalNum, count, true);
+                count++;
+                AddEvent(totalNum, count, true);
+            }
         }
 
         Writer.WriteIndex(Path.Combine(_backup.IndexPath, _recordInfo.Name), targetIndex);

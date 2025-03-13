@@ -53,9 +53,10 @@ internal class MirroringRestoreTask : IRestoreTask
         var es = new List<ExceptionInfo>();
 
         var basePath = _indexToRestore.DirInfo?.FullName.InsertPathSepAtEnd() ?? string.Empty;
-        var files = _indexToRestore.GetAllFileInfo().ToArray();
 
-        var totalNum = files.Length + 1;  // 1 -> Treat dirs as 1 batch
+        var filesToRestore = _indexToRestore.GetAllFileInfo().ToArray();
+
+        var totalNum = filesToRestore.Length + 1;  // 1 -> Treat dirs as 1 batch
         var count = 0;
         AddEvent(totalNum, count, true);
 
@@ -81,7 +82,7 @@ internal class MirroringRestoreTask : IRestoreTask
         count++;
         AddEvent(totalNum, count, true);
 
-        foreach (var (filePath, fileInfo) in _indexToRestore.GetAllFileInfo())
+        foreach (var (filePath, fileInfo) in filesToRestore)
         {
             var sourcePath = Path.Combine(_backup.MirrorPath, filePath);
             // filePath[basePath.Length..] -> relative file path
