@@ -202,26 +202,23 @@ public class TaskService
                 task.Progress += progressInvoke;
 
 				ExceptionInfo[]? exceptions = null;
+
+                void swInvoke(TimeSpan e) => TimeElapsed?.Invoke(this, e);
+                var sw = new Stopwatch(65);
+                sw.Signal += swInvoke;
+                sw.Start();
                 try
                 {
-                    void swInvoke(TimeSpan e) => TimeElapsed?.Invoke(this, e);
-                    var sw = new Stopwatch(65);
-                    sw.Signal += swInvoke;
-
-                    sw.Start();
-
                     task.Execute(out var ex);
                     exceptions = ex ?? [];
-
-                    sw.Stop();
-
-                    sw.Signal -= swInvoke;
                 }
                 catch (Exception e)
                 {
                     Logging.Critical($"Fatal failed on running task `{task}`. {e.Message}");
                     FaultOccurred?.Invoke(this, e);
                 }
+                sw.Stop();
+                sw.Signal -= swInvoke;
 
                 var isFaulted = exceptions is null;  // `exceptions` will be assigned if task executed successfully.
                 if (exceptions is not null)
