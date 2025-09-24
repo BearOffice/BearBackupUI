@@ -25,7 +25,10 @@ public static class IndexBuilder
             try
             {
                 dirInfoIO = new DirInfoIO(path);
-                fileInfoIOs = dirInfoIO.EnumerateFiles().ExceptBy(abFilePaths, io => io.FullName);
+                fileInfoIOs = dirInfoIO
+                    .EnumerateFiles()
+                    .ExceptBy(abFilePaths, io => io.FullName)
+                    .OrderBy(i => i.Name);
             }
             catch (Exception e)
             {
@@ -51,7 +54,10 @@ public static class IndexBuilder
             IEnumerable<DirInfoIO> dirInfoIOs;
             try
             {
-                dirInfoIOs = dirInfoIO.EnumerateDirectories().ExceptBy(abDirPaths, io => io.FullName);
+                dirInfoIOs = dirInfoIO
+                    .EnumerateDirectories()
+                    .ExceptBy(abDirPaths, io => io.FullName)
+                    .OrderBy(i => i.Name);
             }
             catch (Exception e)
             {

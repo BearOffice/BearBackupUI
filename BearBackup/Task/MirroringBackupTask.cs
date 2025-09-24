@@ -172,6 +172,7 @@ public class MirroringBackupTask : IBackupTask
 
             var relativePath = ex.Path[_backupTarget.Length..];
             var parIndex = index.GetSubIndex(Path.GetDirectoryName(relativePath));
+            parIndex ??= index;  // If parIndex is null -> the file is in the root index.
             parIndex?.RemoveFileInfo(Path.GetFileName(relativePath));
         }
     }

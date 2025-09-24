@@ -67,12 +67,16 @@ public class VersioningBackupTask : IBackupTask
             (var mirrorFileIntersect, var targetFileIntersect) = IndexComparison.IntersectFileInfo(mirrorIndex, targetIndex,
                 _backup.FileComparer, _backup.DirComparer, considerAttr: false);
 
-            foreach (((var mIndex, var mFiles), (var tIndex, var tFiles)) in mirrorFileIntersect.Zip(targetFileIntersect))
+            foreach (((var mIndex, var mFiles), (var tIndex, var tFiles)) in 
+                mirrorFileIntersect.OrderBy(i => i.Item1.DirInfo?.FullName)
+                                   .Zip(targetFileIntersect.OrderBy(i => i.Item1.DirInfo?.FullName)))
             {
                 if (mIndex.DirInfo?.FullName != tIndex.DirInfo?.FullName)
                     throw new Exception("Inconsistency occurred. Index file is broken.");
 
-                foreach ((var mFile, var tFile) in mFiles.Zip(tFiles))
+                foreach ((var mFile, var tFile) in 
+                    mFiles.OrderBy(i => i.Name)
+                          .Zip(tFiles.OrderBy(i => i.Name)))
                 {
                     if (mFile.Name != tFile.Name)
                         throw new Exception("Inconsistency occurred. Index file is broken.");
@@ -174,6 +178,7 @@ public class VersioningBackupTask : IBackupTask
 
             var relativePath = ex.Path[_backupTarget.Length..];
             var parIndex = index.GetSubIndex(Path.GetDirectoryName(relativePath));
+            parIndex ??= index;  // If parIndex is null -> the file is in the root index.
             parIndex?.RemoveFileInfo(Path.GetFileName(relativePath));
         }
     }
